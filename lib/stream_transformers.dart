@@ -11,6 +11,7 @@ import 'dart:collection';
 
 part 'src/buffer_when.dart';
 part 'src/combine.dart';
+part 'src/combine_latest.dart';
 part 'src/concat.dart';
 part 'src/concat_all.dart';
 part 'src/debounce.dart';
