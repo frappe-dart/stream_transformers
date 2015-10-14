@@ -1,9 +1,10 @@
 part of stream_transformers;
 
-/// Combines the latest values of two streams using a two argument function.
-/// The combining function will not be called until each stream delivers its
-/// first value. After the first value of each stream is delivered, the
-/// combining function will be invoked for each event from the source streams.
+/// Combines the latest values of two streams into a List.
+/// The combining will not be called until each stream delivers its
+/// first value. After the first value of each stream is delivered, a List of length 2,
+/// containing the latest values from both streams is returned.
+/// The element at position 0 is from the first stream, the element at position 2 is from the second.
 /// Errors occurring on the streams will be forwarded to the transformed
 /// stream. If the source stream is a broadcast stream, then the transformed
 /// stream will also be a broadcast stream.
@@ -13,7 +14,7 @@ part of stream_transformers;
 ///     var controller1 = new StreamController();
 ///     var controller2 = new StreamController();
 ///
-///     var combined = controller1.stream.transform(new CombineLatest(controller2.stream, (a, b) => a + b));
+///     var combinedLatest = controller1.stream.transform(new CombineLatest(controller2.stream));
 ///
 ///     combined.listen(print);
 ///
