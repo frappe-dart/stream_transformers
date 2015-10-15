@@ -27,7 +27,7 @@ void testWithStreamController(StreamController provider()) {
   });
 
   it("partitions get filled with correct values", () {
-    return testStream(controller.stream.transform(new Partition((int value) => value % 2 == 0, 'evens', 'odds')), // even, odd
+    return testStream(controller.stream.transform(new Partition((int value) => value % 2 == 0, nameWhenTrue: 'evens', nameWhenFalse: 'odds')), // even, odd
         behavior: () {
           controller.add(1);
           controller.add(2);
@@ -46,7 +46,7 @@ void testWithStreamController(StreamController provider()) {
 
   it("forwards errors from source and toggle stream", () {
     return testErrorsAreForwarded(
-        controller.stream.transform(new Partition((int value) => value % 2 == 0, 'evens', 'odds')),
+        controller.stream.transform(new Partition((int value) => value % 2 == 0)),
         behavior: () {
           controller.addError(1);
         },
@@ -54,7 +54,7 @@ void testWithStreamController(StreamController provider()) {
   });
 
   it("returns a stream of the same type", () {
-    var stream = controller.stream.transform(new Partition((int value) => value % 2 == 0, 'evens', 'odds'));
+    var stream = controller.stream.transform(new Partition((int value) => value % 2 == 0));
     expect(stream.isBroadcast).toBe(controller.stream.isBroadcast);
   });
 }

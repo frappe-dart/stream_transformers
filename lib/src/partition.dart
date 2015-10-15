@@ -4,24 +4,25 @@ part of stream_transformers;
 /// The predicate acts as a switch to determine in which partition the values go.
 /// If the predicate yields true, the value goes into the first partition.
 /// If the predicate yields false, the value goes into the second partition.
-/// The returned stream is a List containing both partitions.
+/// The returned stream is a Map containing both partitions.
+/// The keys of the Map, representing the true and false partitions, can be passed via named arguments.
 /// 
 /// **Example:**
 ///
 ///     var source = new Stream.fromIterable([1, 2, 3, 4, 5]);
-///     var stream = source.transform(new Partition((int value) => value % 2 == 0));
+///     var stream = source.transform(new Partition((int value) => value % 2 == 0, 'evens', 'odds'));
 ///     stream.listen(print);
 ///
-///     // [], [1]
-///     // [2], [1]
-///     // [2], [1, 3]
-///     // [2, 4], [1, 3]
-///     // [2, 4], [1, 3, 5]
+///     // {evens: null, odds: 1}
+///     // {evens: 2, odds: 1}
+///     // {evens: 2, odds: 3}
+///     // {evens: 4, odds: 3}
+///     // {evens: 4, odds: 5}
 class Partition<T> implements StreamTransformer<T, T> {
   final Function _predicate;
   final String _nameWhenTrue, _nameWhenFalse;
 
-  Partition(bool predicate(T value), String nameWhenTrue, String nameWhenFalse) :
+  Partition(bool predicate(T value), {String nameWhenTrue: 'predicateTrue', String nameWhenFalse: 'predicateFalse'}) :
     _predicate = predicate,
     _nameWhenTrue = nameWhenTrue,
     _nameWhenFalse = nameWhenFalse;
