@@ -11,6 +11,7 @@ import 'flat_map_test.dart' as flat_map;
 import 'flat_map_latest_test.dart' as flat_map_latest;
 import 'merge_all_test.dart' as merge_all;
 import 'merge_test.dart' as merge;
+import 'partition_test.dart' as partition;
 import 'sample_on_test.dart' as sample_on;
 import 'sample_periodically_test.dart' as sample_periodically;
 import 'scan_test.dart' as scan;
@@ -33,6 +34,7 @@ void main() {
   flat_map_latest.main();
   merge.main();
   merge_all.main();
+  partition.main();
   sample_on.main();
   sample_periodically.main();
   scan.main();
