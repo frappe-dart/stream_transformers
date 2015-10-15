@@ -19,24 +19,24 @@ part of stream_transformers;
 ///     // [2, 4], [1, 3, 5]
 class Partition<T> implements StreamTransformer<T, T> {
   final Function _predicate;
-  final Function _inversePredicate;
+  final String _nameWhenTrue, _nameWhenFalse;
 
-  Partition(bool predicate(T value)) :
+  Partition(bool predicate(T value), String nameWhenTrue, String nameWhenFalse) :
     _predicate = predicate,
-    _inversePredicate = ((T value) => !predicate(value));
+    _nameWhenTrue = nameWhenTrue,
+    _nameWhenFalse = nameWhenFalse;
 
   Stream<T> bind(Stream<T> stream) {
 
     return _bindStream(like: stream, onListen: (EventSink<T> sink) {
-      List<T> predicateTrueList = <T>[];
-      List<T> predicateFalseList = <T>[];
+      T predicateTrueValue, predicateFalseValue;
       
       return stream
         .transform(new FlatMapLatest((T value) {
-          if (_predicate(value)) predicateTrueList.add(value);
-          else predicateFalseList.add(value);
+          if (_predicate(value)) predicateTrueValue = value;
+          else predicateFalseValue = value;
           
-          return new Stream.fromIterable(<List<List<T>>>[<List<T>>[predicateTrueList.toList(growable: false), predicateFalseList.toList(growable: false)]]);
+          return new Stream.fromIterable(<Map<String, T>>[<String, T>{_nameWhenTrue: predicateTrueValue, _nameWhenFalse: predicateFalseValue}]);
         }))
         .listen(sink.add, onError: sink.addError, onDone: sink.close);
     });
