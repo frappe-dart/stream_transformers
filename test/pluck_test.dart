@@ -16,11 +16,13 @@ void main() => describe("Pluck", () {
 });
 
 void testWithStreamController(StreamController provider()) {
-  Map targetData;
+  String expectedValue = 'plucked!';
+  Map targetData = {'foo': {'bar': {'baz': expectedValue}}};
+  String pathThatResolves = 'foo.bar.baz';
+  String pathThatFails = 'foo.nonExistingProp.baz';
   StreamController controller;
 
   beforeEach(() {
-    targetData = {'foo': {'bar': {'baz': 'plucked!'}}};
     controller = provider();
   });
 
@@ -29,15 +31,15 @@ void testWithStreamController(StreamController provider()) {
   });
 
   it("resolves the value using a path from the source stream", () {
-    return testStream(controller.stream.transform(new Pluck<String>('foo.bar.baz')),
+    return testStream(controller.stream.transform(new Pluck<String>(pathThatResolves)),
         behavior: () => controller.add(targetData),
         expectation: (values) {
-          expect(values).toEqual(['plucked!']);
+          expect(values).toEqual([expectedValue]);
         });
   });
   
   it("yields null if it fails to resolve the value using a path from the source stream", () {
-    return testStream(controller.stream.transform(new Pluck('foo.nonExistingProp.baz', onError: (_) => null)),
+    return testStream(controller.stream.transform(new Pluck(pathThatFails, onError: (_) => null)),
         behavior: () => controller.add(targetData),
         expectation: (values) {
           expect(values).toEqual([null]);
@@ -46,17 +48,17 @@ void testWithStreamController(StreamController provider()) {
   
   it("forwards errors from source stream if onError is not defined, and resolving the path fails", () {
     return testErrorsAreForwarded(
-        controller.stream.transform(new Pluck('foo.nonExistingProp.baz')),
+        controller.stream.transform(new Pluck(pathThatFails)),
         behavior: () => controller.add(targetData),
         expectation: (errors) => expect(errors.first).toBeAnInstanceOf(ArgumentError));
   });
 
   it("closes transformed stream when source stream is done", () {
-    var stream = controller.stream.transform(new Pluck('foo.bar.baz'));
+    var stream = controller.stream.transform(new Pluck(pathThatResolves));
     var result = stream.toList();
-    controller..add({'foo': {'bar': {'baz': 'plucked!'}}})..close();
+    controller..add(targetData)..close();
     return result.then((values) {
-      expect(values).toEqual(['plucked!']);
+      expect(values).toEqual([expectedValue]);
     });
   });
 
@@ -65,12 +67,12 @@ void testWithStreamController(StreamController provider()) {
     var controller = new StreamController(onCancel: completerA.complete);
 
     return testStream(
-        controller.stream.transform(new Pluck('foo.bar.baz')),
+        controller.stream.transform(new Pluck(pathThatResolves)),
         expectation: (_) => completerA.future);
   });
 
   it("returns a stream of the same type", () {
-    var stream = controller.stream.transform(new Pluck('foo.bar.baz'));
+    var stream = controller.stream.transform(new Pluck(pathThatResolves));
     expect(stream.isBroadcast).toBe(controller.stream.isBroadcast);
   });
 }
