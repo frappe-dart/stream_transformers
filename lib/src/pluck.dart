@@ -17,7 +17,7 @@ class Pluck<T> implements StreamTransformer<T, T> {
   final List<String> _segments;
   final Function _onError;
   
-  Pluck(String path, {T onError(T data)}) :
+  Pluck(String path, {T onError(dynamic data)}) :
     _path = path,
     _segments = path.split('.'),
     _onError = onError;
