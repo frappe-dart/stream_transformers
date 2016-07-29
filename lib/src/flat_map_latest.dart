@@ -7,7 +7,7 @@ part of stream_transformers;
 /// **Example:**
 ///
 ///     var controller = new StreamController();
-///     var latest = controller.stream.transform(new FlatMapLatest((value) => new Stream.fromIterable([value + 1]));
+///     var latest = controller.stream.transform(new FlatMapLatest((value) => new Stream.fromIterable([value + 1])));
 ///
 ///     latest.listen(print);
 ///
