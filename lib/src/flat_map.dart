@@ -8,7 +8,7 @@ part of stream_transformers;
 /// **Example:**
 ///
 ///     var controller = new StreamController();
-///     var flapMapped = controller.stream.transform(new FlatMap((value) => new Stream.fromIterable([value + 1]));
+///     var flatMapped = controller.stream.transform(new FlatMap((value) => new Stream.fromIterable([value + 1])));
 ///
 ///     flatMapped.listen(print);
 ///

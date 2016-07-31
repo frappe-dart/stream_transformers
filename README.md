@@ -213,7 +213,7 @@ Spawns a new stream from a function for each event in the source stream. The ret
 
 ```dart
 var controller = new StreamController();
-var flapMapped = controller.stream.transform(new FlatMap((value) => new Stream.fromIterable([value + 1]));
+var flatMapped = controller.stream.transform(new FlatMap((value) => new Stream.fromIterable([value + 1])));
 
 flatMapped.listen(print);
 
@@ -228,7 +228,9 @@ Similar to `FlatMap`, but instead of including events from all spawned streams, 
 
 ```dart
 var controller = new StreamController();
-var latest = controller.stream.transform(new FlatMapLatest((value) => new Stream.fromIterable([value + 1]));
+var delay0 = new Delay(new Duration(milliseconds: 0));
+var latest = controller.stream.transform(new FlatMapLatest((value) =>
+      new Stream.fromIterable([value + 1]).transform(delay0)));
 
 latest.listen(print);
 
